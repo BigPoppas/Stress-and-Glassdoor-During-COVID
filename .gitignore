@@ -1,0 +1,11 @@
+# Ignore ipynb checkpoints
+.ipynb_checkpoints/
+
+# Ignore Python compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore data folder
+data/
