@@ -19,7 +19,7 @@ def fetch_coordinates(location, index):
     except (GeocoderTimedOut, GeocoderUnavailable):
         print(f"Timeout or unavailable error for location #{index}: {location}")
     except Exception as e:
-        print(f"Cannot geocode location #{index}: {location}. Error: {e}")
+        print(f"Cannot geocode location #{index}: {location}.")
     
     return None
 
