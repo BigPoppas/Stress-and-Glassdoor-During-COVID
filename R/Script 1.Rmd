@@ -1,0 +1,66 @@
+---
+title: "Script 1"
+author: "George Prokopiou"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+install.packages("plm")
+library(plm)
+
+install.packages("lfe")
+library(lfe)
+
+```
+
+```{r}
+DIRECTORY = getwd()
+setwd(DIRECTORY)
+```
+
+```{r}
+FILE_PATH = "../data/"
+reviews = read.csv(paste0(FILE_PATH, "stata_v1.csv")) # skip the index
+```
+
+```{r}
+head(reviews)
+```
+
+```{r}
+model <- felm(
+  as.formula("has_stress ~ year + DURING_COVID + POST_COVID + rating_overall + rating_work_life_balance + length_of_employment + count_helpful + amount_of_funding_rounds_until_now + total_funding_until_now | company_id"),
+  data = reviews
+)
+```
+
+```{r}
+summary(model)
+```
+
+```{r}
+df <- reviews[!duplicated(reviews[c("company_id", "year")]), ]
+```
+
+```{r}
+pdata <- pdata.frame(df, index = c("company_id", "year"))
+```
+
+```{r}
+response_vector <- df$has_stress
+model_matrix <- model.matrix(has_stress ~ year + DURING_COVID + POST_COVID + rating_overall + rating_work_life_balance + factor(company_id) - 1, data = pdata)
+```
+
+```{r}
+model <- glm(response_vector ~ model_matrix - 1, family = binomial)
+```
+
+
+```{r}
+summary(model)
+```
